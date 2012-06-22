@@ -14,3 +14,8 @@ Follow these steps to use custom deployment recipes with your applications.
 * Once you have completed these steps, each rebuild will run the your
   recipes after the default Engine Yard recipes have run. When you
   update your recipes, just re-run `ey recipes upload -e ENV`.
+
+Continuous Integration
+======================
+
+ld Status](https://secure.travis-ci.org/engineyard/ey-cloud-recipes.png?branch=travis)](http://travis-ci.org/engineyard/ey-cloud-recipes)
