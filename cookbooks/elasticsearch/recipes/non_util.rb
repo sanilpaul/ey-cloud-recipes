@@ -4,13 +4,13 @@
 #
 # Credit goes to GoTime for their original recipe ( http://cookbooks.opscode.com/cookbooks/elasticsearch )
 
-if ['solo','app_master'].include?(node[:instance_role])
-  Chef::Log.info "Downloading Elasticsearch v#{node[:elasticsearch_version]} checksum #{node[:elasticsearch_checksum]}"
-  remote_file "/tmp/elasticsearch-#{node[:elasticsearch_version]}.zip" do
-    source "https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-#{node[:elasticsearch_version]}.zip"
+if ['solo','app_master'].include?(node['instance_role'])
+  Chef::Log.info "Downloading Elasticsearch v#{node['elasticsearch_version']} checksum #{node['elasticsearch_checksum']}"
+  remote_file "#{Chef::Config[:file_cache_path]}/elasticsearch-#{node['elasticsearch_version']}.zip" do
+    source "https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-#{node['elasticsearch_version']}.zip"
     mode "0644"
-    checksum node[:elasticsearch_checksum]
-    not_if { File.exists?("/tmp/elasticsearch-#{node[:elasticsearch_version]}.zip") }
+    checksum node['elasticsearch_checksum']
+    not_if { File.exists?("/tmp/elasticsearch-#{node['elasticsearch_version']}.zip") }
   end
 
   user "elasticsearch" do
@@ -26,7 +26,7 @@ if ['solo','app_master'].include?(node[:instance_role])
     action :upgrade
   end
 
-  directory "/usr/lib/elasticsearch-#{node[:elasticsearch_version]}" do
+  directory "/usr/lib/elasticsearch-#{node['elasticsearch_version']}" do
     owner "root"
     group "root"
     mode 0755
@@ -43,34 +43,34 @@ if ['solo','app_master'].include?(node[:instance_role])
   bash "unzip elasticsearch" do
     user "root"
     cwd "/tmp"
-    code %(unzip /tmp/elasticsearch-#{node[:elasticsearch_version]}.zip)
-    not_if { File.exists? "/tmp/elasticsearch-#{node[:elasticsearch_version]}" }
+    code %(unzip /tmp/elasticsearch-#{node['elasticsearch_version']}.zip)
+    not_if { File.exists? "/tmp/elasticsearch-#{node['elasticsearch_version']}" }
   end
 
   bash "copy elasticsearch root" do
     user "root"
     cwd "/tmp"
-    code %(cp -r /tmp/elasticsearch-#{node[:elasticsearch_version]}/* /usr/lib/elasticsearch-#{node[:elasticsearch_version]})
-    not_if { File.exists? "/usr/lib/elasticsearch-#{node[:elasticsearch_version]}/lib" }
+    code %(cp -r /tmp/elasticsearch-#{node['elasticsearch_version']}/* /usr/lib/elasticsearch-#{node['elasticsearch_version']})
+    not_if { File.exists? "/usr/lib/elasticsearch-#{node['elasticsearch_version']}/lib" }
   end
 
-  directory "/usr/lib/elasticsearch-#{node[:elasticsearch_version]}/plugins" do
+  directory "/usr/lib/elasticsearch-#{node['elasticsearch_version']}/plugins" do
     owner "root"
     group "root"
     mode 0755
   end
 
   link "/usr/lib/elasticsearch" do
-    to "/usr/lib/elasticsearch-#{node[:elasticsearch_version]}"
+    to "/usr/lib/elasticsearch-#{node['elasticsearch_version']}"
   end
 
-  directory "#{node[:elasticsearch_home]}" do
+  directory node['elasticsearch_home'] do
     owner "elasticsearch"
     group "nogroup"
     mode 0755
   end
 
-  directory "/usr/lib/elasticsearch-#{node[:elasticsearch_version]}/data" do
+  directory "/usr/lib/elasticsearch-#{node['elasticsearch_version']}/data" do
     owner "root"
     group "root"
     mode 0755
@@ -78,14 +78,14 @@ if ['solo','app_master'].include?(node[:instance_role])
     recursive true
   end
 
-  mount "/usr/lib/elasticsearch-#{node[:elasticsearch_version]}/data" do
-    device "#{node[:elasticsearch_home]}"
+  mount "/usr/lib/elasticsearch-#{node['elasticsearch_version']}/data" do
+    device node['elasticsearch_home']
     fstype "none"
     options "bind,rw"
     action :mount
   end
 
-  template "/usr/lib/elasticsearch-#{node[:elasticsearch_version]}/config/logging.yml" do
+  template "/usr/lib/elasticsearch-#{node['elasticsearch_version']}/config/logging.yml" do
     source "logging.yml.erb"
     mode 0644
   end
@@ -96,7 +96,7 @@ if ['solo','app_master'].include?(node[:instance_role])
     mode 0755
   end
 
-  template "/etc/monit.d/elasticsearch_#{node[:elasticsearch_clustername]}.monitrc" do
+  template "/etc/monit.d/elasticsearch_#{node['elasticsearch_clustername']}.monitrc" do
     source "elasticsearch.monitrc.erb"
     owner "elasticsearch"
     group "nogroup"
@@ -110,18 +110,18 @@ if ['solo','app_master'].include?(node[:instance_role])
   end
 end
 
-solo = node[:instance_role] == 'solo'
-if ['solo','app_master','app','util'].include?(node[:instance_role])
+solo = node['instance_role'] == 'solo'
+if ['solo','app_master','app','util'].include?(node['instance_role'])
   node.engineyard.apps.each do |app|
     template "/data/#{app.name}/shared/config/elasticsearch.yml" do
-      owner node[:owner_name]
-      group node[:owner_name]
+      owner node['owner_name']
+      group node['owner_name']
       mode 0660
       source "es.yml.erb"
       backup 0
       variables(:yaml_file => {
         node.engineyard.environment.framework_env => { 
-        :hosts => solo ? "127.0.0.1:9200" : "#{node[:master_app_server][:public_ip]}:9200" }})
+        :hosts => solo ? "127.0.0.1:9200" : "#{node['master_app_server']['public_ip']}:9200" }})
     end
   end
 end
