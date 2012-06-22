@@ -18,4 +18,4 @@ Follow these steps to use custom deployment recipes with your applications.
 Continuous Integration
 ======================
 
-[![Build Status](https://secure.travis-ci.org/engineyard/ey-cloud-recipes.png?branch=master)](http://travis-ci.org/engineyard/ey-cloud-recipes)
+[![Build Status](https://secure.travis-ci.org/engineyard/ey-cloud-recipes.png?branch=travis)](http://travis-ci.org/engineyard/ey-cloud-recipes)
