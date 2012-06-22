@@ -4,4 +4,4 @@ gemfile:
 rvm:
   - 1.9.2
   - 1.9.3
-script: bundle exec foodcritic --epic-fail any cookbooks
+script: bundle exec foodcritic --epic-fail any --chef-version 0.6 cookbooks
