@@ -3,8 +3,8 @@
 # Recipe:: default
 #
 
-if ['util'].include?(node[:instance_role])
-  if node[:name] == 'redis'
+if ['util'].include?(node['instance_role'])
+  if node['name'] == 'redis'
 
     sysctl "Enable Overcommit Memory" do
       variables 'vm.overcommit_memory' => 1
@@ -19,7 +19,7 @@ if ['util'].include?(node[:instance_role])
       action :upgrade
     end
 
-    directory "#{node[:redis][:basedir]}" do
+    directory node['redis']['basedir'] do
       owner 'redis'
       group 'redis'
       mode 0755
@@ -33,17 +33,17 @@ if ['util'].include?(node[:instance_role])
       mode 0644
       source "redis.conf.erb"
       variables({
-                  :pidfile => node[:redis][:pidfile],
-                  :basedir => node[:redis][:basedir],
-                  :basename => node[:redis][:basename],
-                  :logfile => node[:redis][:logfile],
-                  :loglevel => node[:redis][:loglevel],
-                  :port  => node[:redis][:bindport],
-                  :unixsocket => node[:redis][:unixsocket],
-                  :saveperiod => node[:redis][:saveperiod],
-                  :timeout => node[:redis][:timeout],
-                  :databases => node[:redis][:databases],
-                  :rdbcompression => node[:redis][:rdbcompression],
+                  :pidfile => node['redis']['pidfile'],
+                  :basedir => node['redis']['basedir'],
+                  :basename => node['redis']['basename'],
+                  :logfile => node['redis']['logfile'],
+                  :loglevel => node['redis']['loglevel'],
+                  :port  => node['redis']['bindport'],
+                  :unixsocket => node['redis']['unixsocket'],
+                  :saveperiod => node['redis']['saveperiod'],
+                  :timeout => node['redis']['timeout'],
+                  :databases => node['redis']['databases'],
+                  :rdbcompression => node['redis']['rdbcompression'],
                 })
     end
 
@@ -55,14 +55,18 @@ if ['util'].include?(node[:instance_role])
       variables({
                   :profile => '1',
                   :configfile => '/etc/redis_util.conf',
-                  :pidfile => node[:redis][:pidfile],
-                  :logfile => node[:redis][:basename],
-                  :port => node[:redis][:bindport],
+                  :pidfile => node['redis']['pidfile'],
+                  :logfile => node['redis']['basename'],
+                  :port => node['redis']['bindport'],
                 })
     end
 
-    execute "monit reload" do
-      action :run
+    #execute "monit reload" do
+    #  action :run
+    #end
+
+    service "monit" do
+      action :reload
     end
   end
 end
