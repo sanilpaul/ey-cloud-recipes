@@ -87,7 +87,11 @@ template "/etc/conf.d/mongodb" do
   })
 end
 
-execute "/etc/init.d/mongodb restart" do
-  command "/etc/init.d/mongodb restart" 
+#execute "/etc/init.d/mongodb restart" do
+#  command "/etc/init.d/mongodb restart" 
+#end
+
+service "mongodb" do
+  action :restart
 end
 

@@ -58,9 +58,13 @@ if API_KEYS.has_key? @node[:environment][:name] and SECRET_KEYS.has_key? @node[:
     action :create
   end
 
-  execute "Reload monit" do
-    command "sudo /etc/init.d/monit reload"
-  end
+  #execute "Reload monit" do
+  #  command "sudo /etc/init.d/monit reload"
+  #end
 
+  service "monit" do
+    reload_command "sudo /etc/init.d/monit reload"
+    action :reload
+  end
 end
 
