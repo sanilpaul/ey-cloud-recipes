@@ -1,16 +1,17 @@
-= DESCRIPTION:
+# DESCRIPTION:
 
 This cookbook installs and configures a replication_check script on your master database instance.  
 
-= PRE-REQUISITES:
+# PRE-REQUISITES:
 
-Exim or SSMTP must be configured on your instances in order for this monitoring script to send e-mail from your AppCloud database instances.  The ey-cloud-recipes repo contains recipes for configuring both of these.
+Exim or SSMTP must be configured on your instances in order for this monitoring script to send e-mail from your Cloud database instances.  The ey-cloud-recipes repo contains recipes for configuring both of these.
 
 Gems for json and yaml must be included.
 
-= USAGE:
+# USAGE:
 
-Step 1) In the ./recipes/default.rb add your sender and recipient email addresses for alerts in the 'check_vars' section.  Adjustments to the monitoring and alerting thresholds can also be made here.
+1. In the ./recipes/default.rb add your sender and recipient email addresses for alerts in the 'check_vars' section.  Adjustments to the monitoring and alerting thresholds can also be made here.
+"""ruby
 check_vars = {
   # the number of seconds delay at which a warning alert is issued; default 30 minutes (1800 seconds)
   :warn_level => 1800,
@@ -21,10 +22,11 @@ check_vars = {
   # valid email address for sending email alerts
   :mail_sender => '42@douglasadams.com'
 }
+"""
 
-Step 2) Commit and upload: `ey recipes upload -e <ENV>` and then apply: `ey recipes apply -e <ENV>`
+2. Commit and upload: `ey recipes upload -e <ENV>` and then apply: `ey recipes apply -e <ENV>`
 
-= NOTES:
+# NOTES:
 
 Engine Yard Support is not notified of these replication alerts currently.  If you require additional assistance with a replication failure please file a ticket with our support team.  
 

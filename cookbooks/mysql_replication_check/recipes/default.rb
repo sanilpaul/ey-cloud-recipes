@@ -22,9 +22,9 @@ check_vars = {
   :mail_sender => ''
 }
 
-if node[:instance_role].include?('db_master')
+if node['instance_role'].include?('db_master')
   
-  directory "#{install_path}" do
+  directory "install_path" do
     owner 'root'
     group 'root'
     mode 0755
