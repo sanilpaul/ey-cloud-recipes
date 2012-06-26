@@ -1,10 +1,10 @@
 enable_package "app-admin/newrelic-sysmond" do
-  version "#{node[:newrelic][:version]}"
+  version node['newrelic']['version']
 end
 
 package "app-admin/newrelic-sysmond" do
   action :install
-  version "#{node[:newrelic][:version]}"
+  version node['newrelic']['version']
 end
 
 template "/etc/newrelic/nrsysmond.cfg" do
@@ -14,7 +14,7 @@ template "/etc/newrelic/nrsysmond.cfg" do
   mode 0644
   backup 0
   variables(
-    :key   => node[:newrelic][:license_key])
+    :key   => node['newrelic']['license_key'])
 end
 
 remote_file "/etc/monit.d/nrsysmond.monitrc" do
@@ -32,6 +32,10 @@ directory "/var/log/newrelic" do
   group 'root'
 end
 
-execute "monit reload" do
-  action :run
+#execute "monit reload" do
+#  action :run
+#end
+
+service "monit" do
+  action :reload
 end
