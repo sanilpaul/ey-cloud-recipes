@@ -5,7 +5,7 @@
 # Configure application servers to use an Amazon RDS database (or any external ActiveRecord-compatible database)
 # Note: This recipe does not make any changes to Engine Yard-provisioned databases
 
-if ['solo', 'app_master', 'app', 'util'].include?(node[:instance_role])
+if ['solo', 'app_master', 'app', 'util'].include?(node['instance_role'])
   # for each application
   node.engineyard.apps.each do |app|
     # retrieve attributes
@@ -20,18 +20,18 @@ if ['solo', 'app_master', 'app', 'util'].include?(node[:instance_role])
 
     # create new database.yml with attributes
     template "/data/#{app.name}/shared/config/database.yml" do
-      owner node[:owner_name]
-      group node[:owner_name]
+      owner node['owner_name']
+      group node['owner_name']
       backup false
       mode 0644
       source 'database.yml.erb'
       variables({
-        :environment => node[:environment][:framework_env],
-        :adapter => attributes[:adapter],
-        :database => attributes[:database],
-        :username => attributes[:username],
-        :password => attributes[:password],
-        :host => attributes[:host]
+        :environment => node['environment']['framework_env'],
+        :adapter => attributes['adapter'],
+        :database => attributes['database'],
+        :username => attributes['username'],
+        :password => attributes['password'],
+        :host => attributes['host']
       })
     end
   end
