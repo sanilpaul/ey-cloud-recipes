@@ -4,19 +4,19 @@ require 'pp'
 # Recipe:: default
 #
 
-node[:applications].each do |app_name,data|
-  user = node[:users].first
+node['applications'].each do |app_name,data|
+  user = node['users'].first
 
-case node[:instance_role]
+case node['instance_role']
  when "solo", "app", "app_master"
    template "/data/#{app_name}/shared/config/memcached_custom.yml" do
      source "memcached.yml.erb"
-     owner user[:username]
-     group user[:username]
+     owner user['username']
+     group user['username']
      mode 0744
      variables({
          :app_name => app_name,
-         :server_names => node[:members]
+         :server_names => node['members']
      })
    end
 
