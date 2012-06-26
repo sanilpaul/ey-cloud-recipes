@@ -91,8 +91,8 @@ end
 
 # Install the glassfish configuration file.
 template File.join([APP_DIRECTORY],'config','glassfish.yml') do
-  owner node[:owner_name]
-  group node[:owner_name]
+  owner node['owner_name']
+  group node['owner_name']
   source 'glassfish.yml.erb'
   variables({
     :environment => 'development',
